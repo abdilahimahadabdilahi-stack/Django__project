@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <div class="row d-flex justify-content-center">
+        <div class="col-8">
+
+            <div class="card p-4 text-center">
+                <h4>Delete Supplier</h4>
+
+                <p>Are you sure you want to delete <strong>{{ supplier.sales_person }}</strong>?</p>
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                    <a href="{% url 'supplier_list' %}" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

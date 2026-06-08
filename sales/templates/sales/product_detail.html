@@ -1,0 +1,38 @@
+{% extends 'sales/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <div class="row d-flex justify-content-center">
+        <div class="col-8">
+
+            <div class="card p-4">
+                <h4>Product Detail</h4>
+                <hr>
+
+                <p><strong>Name:</strong> {{ product.name }}</p>
+                <p><strong>Selling Price:</strong> {{ product.selling_price }}</p>
+                <p><strong>Buying Price:</strong> {{ product.buying_price }}</p>
+                <p><strong>Category:</strong> {{ product.category }}</p>
+
+                <div class="mt-3">
+                    <a href="{% url 'product_update' product.id %}" class="btn btn-warning">
+                        Update
+                    </a>
+
+                    <a href="{% url 'product_delete' product.id %}" class="btn btn-danger">
+                        Delete
+                    </a>
+
+                    <a href="{% url 'product_list' %}" class="btn btn-secondary">
+                        Back
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}
