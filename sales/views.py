@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Customer, Product, Supplier
-
-
+from.forms import CustomerForm
 
 def customer_list(request):
     customers = Customer.objects.all()
@@ -24,35 +23,29 @@ def customer_detail(request, pk):
 
 
 def customer_create(request):
+    form = CustomerForm()
     if request.method == 'POST':
-        Customer.objects.create(
-            name=request.POST.get('name'),
-            address=request.POST.get('address'),
-            phone=request.POST.get('phone'),
-            email=request.POST.get('email')
-        )
-
-        return redirect('customer_list')
-
-    context = {}
-
+        form = CustomerForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('customer_list')
+    context = {
+        'form' : form
+    }
     return render(request, 'sales/customer_create.html', context)
 
 
 def customer_update(request, pk):
     customer = get_object_or_404(Customer, pk=pk)
-
+    form = CustomerForm(instance=customer)
     if request.method == 'POST':
-        customer.name = request.POST.get('name')
-        customer.address = request.POST.get('address')
-        customer.phone = request.POST.get('phone')
-        customer.email = request.POST.get('email')
-        customer.save()
-
-        return redirect('customer_list')
-
+        form = CustomerForm(request.POST , instance=customer)
+        if form.is_valid():
+            form.save()
+            return redirect('customer_list')
     context = {
-        'customer': customer
+        'customer': customer,
+        'form': form 
     }
 
     return render(request, 'sales/customer_update.html', context)
