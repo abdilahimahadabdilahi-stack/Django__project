@@ -1,45 +1,69 @@
-{% extends 'sales/base.html' %}
+{% extends 'base.html' %}
+
+{% block title %}Update Product - Sales System{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-
-    <div class="row d-flex justify-content-center">
-        <div class="col-8">
-
-            <div class="card p-4">
-                <h4 class="mb-3">Update Product</h4>
-
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8 col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0 fs-5"><i class="bi bi-pencil-square me-2"></i>Update Product</h4>
+            </div>
+            <div class="card-body p-4">
+                
                 <form method="POST">
                     {% csrf_token %}
 
-                    <div class="form-group mb-2">
-                        <label class="form-label">Name</label>
-                        <input type="text" name="name" value="{{ product.name }}" class="form-control">
-                    </div>
+                    <!-- Hadii aad Django ModelForm dhanka views-ka ka isticmaalayso (Tiriinka Ugu Fiican) -->
+                    {% if form %}
+                        {{ form.as_p }}
+                    {% else %}
+                        <!-- Hadii aad HTML Form toos ah isticmaalayso -->
+                        <div class="mb-3">
+                            <label class="form-label font-weight-bold">Store (Bakhaarka)</label>
+                            <select name="store" class="form-select">
+                                <option value="">-- Dooro Store --</option>
+                                {% for store in stores %}
+                                    <option value="{{ store.id }}" {% if product.store and product.store.id == store.id %}selected{% endif %}>
+                                        {{ store.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
 
-                    <div class="form-group mb-2">
-                        <label class="form-label">Selling Price</label>
-                        <input type="text" name="selling_price" value="{{ product.selling_price }}" class="form-control">
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label">Product Name</label>
+                            <input type="text" name="name" value="{{ product.name }}" class="form-control" required>
+                        </div>
 
-                    <div class="form-group mb-2">
-                        <label class="form-label">Buying Price</label>
-                        <input type="text" name="buying_price" value="{{ product.buying_price }}" class="form-control">
-                    </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Selling Price ($)</label>
+                                <input type="number" step="0.01" name="selling_price" value="{{ product.selling_price }}" class="form-control" required>
+                            </div>
 
-                    <div class="form-group mb-3">
-                        <label class="form-label">Category</label>
-                        <input type="text" name="category" value="{{ product.category }}" class="form-control">
-                    </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-danger">Buying Price ($)</label>
+                                <input type="number" step="0.01" name="buying_price" value="{{ product.buying_price }}" class="form-control" required>
+                            </div>
+                        </div>
 
-                    <button type="submit" class="btn btn-success">Update</button>
-                    <a href="{% url 'product_list' %}" class="btn btn-secondary">Cancel</a>
+                        <div class="mb-4">
+                            <label class="form-label">Category</label>
+                            <input type="text" name="category" value="{{ product.category }}" class="form-control" required>
+                        </div>
+                    {% endif %}
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success fw-bold px-4">
+                            <i class="bi bi-check-circle me-1"></i> Update
+                        </button>
+                        <a href="{% url 'product_list' %}" class="btn btn-secondary px-4">Cancel</a>
+                    </div>
                 </form>
 
             </div>
-
         </div>
     </div>
-
 </div>
 {% endblock %}

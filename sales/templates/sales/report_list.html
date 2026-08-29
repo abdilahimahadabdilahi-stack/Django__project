@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}Reports & Dashboard{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-graph-up me-2"></i>Warbixinada (Reports)</h2>
+    {% if is_manager %}
+        <a href="{% url 'report_create' %}" class="btn btn-warning fw-bold">
+            <i class="bi bi-file-earmark-plus me-1"></i> Create Report
+        </a>
+    {% endif %}
+</div>
+
+{% if is_manager %}
+    <!-- MANAGER DASHBOARD & REPORT TABLE -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card bg-success text-white p-3 shadow-sm border-0">
+                <h5>Dhamaan Dakhliga Soo Galay</h5>
+                <h2 class="fw-bold">${{ total_income }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-dark text-white fw-bold">Warbixinada Guud ee Ganacsiga</div>
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Created By</th>
+                        <th>Total Sales</th>
+                        <th>Total Profit</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for report in reports %}
+                    <tr>
+                        <td class="fw-bold">{{ report.title }}</td>
+                        <td>{{ report.created_by.username }}</td>
+                        <td class="text-success fw-bold">${{ report.total_sales }}</td>
+                        <td class="text-primary fw-bold">${{ report.total_profit }}</td>
+                        <td>{{ report.created_at|date:"M d, Y" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-3 text-muted">Wax report ah oo la abuuray ma jiraan.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% else %}
+    <!-- CUSTOMER RECEIPT REPORT -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card bg-info text-white p-3 shadow-sm border-0">
+                <h5>Wadarta Lacagta Aad Bixisay</h5>
+                <h2 class="fw-bold">${{ total_spent }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-primary text-white fw-bold">Warbixinta Iibkaaga (Your Receipts)</div>
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price Paid</th>
+                        <th>Method</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in payments %}
+                    <tr>
+                        <td>{{ payment.product.name }}</td>
+                        <td class="fw-bold">${{ payment.amount }}</td>
+                        <td>{{ payment.get_payment_method_display }}</td>
+                        <td>{{ payment.date|date:"Y-m-d" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-3 text-muted">Wali wax alaab ah ma iabsan.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

@@ -3,53 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-  </head>
+    <title>{% block title %}Sales System{% endblock %}</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-      
-          <a class="navbar-brand" href="{% url 'customer_list' %}">
-            Sales System
-          </a>
-      
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-      
-          <div class="collapse navbar-collapse" id="navbarNav">
-      
-            <ul class="navbar-nav">
-      
-              <!-- Customers -->
-              <li class="nav-item">
-                <a class="nav-link active" href="{% url 'customer_list' %}">
-                  Customers
-                </a>
-              </li>
-      
-              <!-- Products -->
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'product_list' %}">
-                  Products
-                </a>
-              </li>
-      
-              <!-- Suppliers -->
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'supplier_list' %}">
-                  Suppliers
-                </a>
-              </li>
-      
-            </ul>
-      
-          </div>
+<body class="bg-light d-flex flex-column min-vh-100">
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{% url 'customer_list' %}">
+                <i class="bi bi-shop me-2"></i>Sales System
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    {% if user.is_authenticated %}
+                        <!-- Products (Waa u furan tahay dhamaan) -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'product_list' %}">Products</a>
+                        </li>
+
+                        <!-- Payments -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'payment_list' %}">Payments</a>
+                        </li>
+
+                        <!-- Reports -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'report_list' %}">Reports</a>
+                        </li>
+
+                        <!-- MANAGER ONLY LINKS -->
+                        {% if user.is_staff %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'customer_list' %}">Customers</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'store_list' %}">Stores</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'supplier_list' %}">Suppliers</a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+
+                <!-- USER AUTHENTICATION LINKS -->
+                <div class="d-flex align-items-center gap-2">
+                    {% if user.is_authenticated %}
+                        <span class="navbar-text text-white me-2">
+                            <i class="bi bi-person-circle me-1"></i>{{ user.username }} 
+                            {% if user.is_staff %}<span class="badge bg-warning text-dark">Manager</span>{% endif %}
+                        </span>
+                        <a href="{% url 'logout' %}" class="btn btn-outline-light btn-sm">Logout</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-outline-light btn-sm">Login</a>
+                        <a href="{% url 'register' %}" class="btn btn-warning btn-sm fw-bold">Sign Up</a>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-      </nav>
-    {% block content %}
-    {% endblock %}
+    </nav>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="container my-4 flex-grow-1">
+        {% block content %}
+            <!-- HERO SECTION -->
+            <div class="p-5 mb-4 bg-white rounded-3 shadow-sm border">
+                <div class="container-fluid py-3 text-center">
+                    <h1 class="display-5 fw-bold text-primary">Ku Soo Dhawoow Sales System</h1>
+                    <p class="fs-5 text-muted mx-auto" style="max-width: 700px;">
+                        Halkaan waxaad ku maamuli kartaa iibka alaabta, lacag bixinta, bakhaarrada, iyo warbixinada ganacsiga si fudud oo ammaan ah.
+                    </p>
+                    {% if not user.is_authenticated %}
+                        <div class="d-flex justify-content-center gap-3 mt-4">
+                            <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-4 fw-bold">Bilaaw Hada</a>
+                            <a href="{% url 'login' %}" class="btn btn-outline-secondary btn-lg px-4">Gala Akaun-kaaga</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- DASHBOARD CARDS -->
+            <div class="row g-4 mt-2">
+                <!-- Products Card -->
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm text-center p-3">
+                        <div class="card-body">
+                            <i class="bi bi-box-seam text-primary display-4 mb-3"></i>
+                            <h5 class="card-title fw-bold">Alaabta (Products)</h5>
+                            <p class="card-text text-muted">Eeg dhammaan alaabta iibka ah iyo qiimayaashooda kala duwan.</p>
+                            <a href="{% url 'product_list' %}" class="btn btn-outline-primary btn-sm mt-2">Eeg Products</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payments Card -->
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm text-center p-3">
+                        <div class="card-body">
+                            <i class="bi bi-credit-card text-success display-4 mb-3"></i>
+                            <h5 class="card-title fw-bold">Lacag Bixinta (Payments)</h5>
+                            <p class="card-text text-muted">Agaaasim ama samee lacag bixinta adoo isticmaalaya hababka EVC, Zaad, Cash, jw.</p>
+                            <a href="{% url 'payment_list' %}" class="btn btn-outline-success btn-sm mt-2">Eeg Payments</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reports Card -->
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm text-center p-3">
+                        <div class="card-body">
+                            <i class="bi bi-graph-up-arrow text-warning display-4 mb-3"></i>
+                            <h5 class="card-title fw-bold">Warbixinada (Reports)</h5>
+                            <p class="card-text text-muted">Kala soco warbixinta iibkaaga ama faa'iidada guud ee ganacsiga.</p>
+                            <a href="{% url 'report_list' %}" class="btn btn-outline-warning btn-sm text-dark mt-2">Eeg Reports</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-top py-3 text-center text-muted">
+        <div class="container">
+            <small>&copy; 2026 Sales System Management. All rights reserved.</small>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
