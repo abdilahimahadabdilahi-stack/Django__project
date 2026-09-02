@@ -41,4 +41,5 @@ urlpatterns = [
     # Report URLs
     path('reports/', views.report_list, name='report_list'),
     path('report/add/', views.report_create, name='report_create'),
+    path('register/', views.register_view, name='register'),
 ]

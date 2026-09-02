@@ -1,30 +1,45 @@
-<!DOCTYPE html>
-<html lang="so">
-<head>
-    <meta charset="UTF-8">
-    <title>Diwaan-gelin (Register)</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-</head>
-<body class="bg-light">
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-5">
-                <div class="card shadow">
-                    <div class="card-header bg-success text-white text-center">
-                        <h4>Akaoun Cusub Abuur</h4>
-                    </div>
-                    <div class="card-body">
-                        <form method="POST">
-                            {% csrf_token %}
-                            {{ form.as_p }}
-                            <button type="submit" class="btn btn-success w-100">Diwaan-geli</button>
-                        </form>
-                        <hr>
-                        <p class="text-center">Akaoun ma leedahay? <a href="{% url 'login' %}">Log in halkan</a></p>
-                    </div>
+{% extends 'base.html' %}
+
+{% block title %}Samayso Akownt Cusub{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">Akowt Cusub Abuur</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        {% for field in form %}
+                            <div class="mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label fw-bold">
+                                    {{ field.label }}
+                                </label>
+                                <input type="{{ field.field.widget.input_type|default:'text' }}" 
+                                       name="{{ field.name }}" 
+                                       id="{{ field.id_for_label }}" 
+                                       class="form-control {% if field.errors %}is-invalid{% endif %}"
+                                       value="{{ field.value|default:'' }}">
+                                {% for error in field.errors %}
+                                    <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary">Diwaan Geli</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center py-3">
+                    <small>Sidaan hore uga tirsanayd? <a href="{% url 'login' %}">Log-in sameey</a></small>
                 </div>
             </div>
         </div>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}
